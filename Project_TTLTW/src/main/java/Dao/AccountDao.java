@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import Connect.DataDB;
@@ -22,6 +23,16 @@ public class AccountDao
         sta.setString(4, account.getPhoneNumber());
         sta.setInt(5, account.getSex());
         sta.setString(6, ""+account.getNewsletter());
+        sta.executeUpdate();
+    }
+
+    //luu public key vao db
+    public static void addPublicKey(String username, String publickey, String date) throws SQLException, ClassNotFoundException {
+        DataDB db = new DataDB();
+        PreparedStatement sta = db.getStatement("insert into public_key (username, publickey, createAt) values (?, ?, ?)");
+        sta.setString(1, username);
+        sta.setString(2, publickey);
+        sta.setString(3, date);
         sta.executeUpdate();
     }
 

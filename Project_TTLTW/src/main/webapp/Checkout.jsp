@@ -26,7 +26,7 @@
     <div class="row">
       <jsp:include page="Layout/MenuBarAccount.jsp" />
       <div id="content" class="col-sm-9">
-        <form action="CheckOrder" method="post">
+        <form action="CheckOrder" method="post" enctype="multipart/form-data">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3>Bước 1: Chi tiết thanh toán</h3>
@@ -174,6 +174,25 @@
                 </table>
               </div>
             </div>
+
+<%--          them input nhap private key--%>
+          <div>
+            <p style="font-weight: bold">&nbsp;&nbsp;Nhập PrivateKey</p>
+            <label for="optionSelect" style="font-weight: bold">&nbsp;&nbsp;Chọn một tùy chọn:</label>
+            <select id="optionSelect" name="option" onchange="toggleOptions()">
+              <option value="none">None</option>
+              <option value="text">Nhập Text</option>
+              <option value="file">Tải File</option>
+            </select>
+            <div id="textInput" style="display: none;">
+              <input type="text" id="textInputField" name="textData" placeholder="Nhập văn bản">
+            </div>
+            <div id="fileInput" style="display: none;">
+              <input type="file" id="fileInputField" name="fileData">
+            </div>
+          </div>
+
+<%--          --%>
           </div>
         <div class="buttons">
           <div class="pull-right">
@@ -186,6 +205,28 @@
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script>
+    function toggleOptions() {
+      var selectedOption = document.getElementById("optionSelect").value;
+      var textInputField = document.getElementById("textInputField");
+      var fileInputField = document.getElementById("fileInputField");
+
+      if (selectedOption === "none") {
+        document.getElementById("fileInput").style.display = "none";
+        document.getElementById("textInput").style.display = "none";
+        fileInputField.value = "";
+        textInputField.value = "";
+      } else if (selectedOption === "text") {
+        document.getElementById("fileInput").style.display = "none";
+        document.getElementById("textInput").style.display = "block";
+        fileInputField.value = ""; // Xóa dữ liệu trong trường file input
+      } else if (selectedOption === "file") {
+        document.getElementById("textInput").style.display = "none";
+        document.getElementById("fileInput").style.display = "block";
+        textInputField.value = ""; // Xóa dữ liệu trong trường text input
+      }
+    }
+  </script>
   <script>
     var citis = document.getElementById("city");
     var districts = document.getElementById("district");

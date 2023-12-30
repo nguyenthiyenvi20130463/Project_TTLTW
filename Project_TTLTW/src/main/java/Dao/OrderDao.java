@@ -20,6 +20,17 @@ public class OrderDao
         sta.setString(1, status);
         sta.executeUpdate();
     }
+
+    //add signature
+    public void updateSignature(String id, String encrypt) throws SQLException, ClassNotFoundException {
+        DataDB db = new DataDB();
+        PreparedStatement sta = db.getStatement("update order1 set signature = ? where id=?");
+        sta.setString(1, encrypt);
+        sta.setString(2, id);
+        sta.executeUpdate();
+    }
+
+
     public int countOrder(String username) throws SQLException, ClassNotFoundException {
         int i=0;
         DataDB db = new DataDB();

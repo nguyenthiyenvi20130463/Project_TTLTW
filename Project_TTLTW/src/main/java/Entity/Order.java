@@ -1,9 +1,11 @@
 package Entity;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Date;
+import java.util.HashMap;
 
-public class Order
+public class Order implements Serializable
 {
     private String id;
     private String username;
@@ -20,6 +22,7 @@ public class Order
     private String status;
     private int number;
     private String nameAccount;
+    private HashMap<String, Integer> listProducts = new HashMap<>();
     public Order(String id, String username, String payment, String ship, String fullname, String phone, String address, int total, Date date, int totalship, String comment, String status, int number, Time time) {
         this.id = id;
         this.username = username;
@@ -35,6 +38,29 @@ public class Order
         this.status = status;
         this.number = number;
         this.time = time;
+    }
+    public Order(String id, String username, String payment, String ship, String fullname, String phone, String address, int total,int totalship, String comment) {
+        this.id = id;
+        this.username = username;
+        this.payment = payment;
+        this.ship = ship;
+        this.fullname = fullname;
+        this.phone = phone;
+        this.address = address;
+        this.total = total;
+        this.date = date;
+        this.totalship = totalship;
+        this.comment = comment;
+        this.number = number;
+        this.time = time;
+    }
+
+    public void addProductBuy(String idProduct, int quantity){
+        if(listProducts.containsKey(idProduct)){
+            listProducts.put(idProduct, listProducts.get(idProduct)+quantity);
+            return;
+        }
+        listProducts.put(idProduct, quantity);
     }
 
     public String getNameAccount() {

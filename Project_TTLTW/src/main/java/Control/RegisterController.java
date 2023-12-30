@@ -5,9 +5,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletRequest;
 import Dao.AccountDao;
 import Entity.Account;
+import Ultis.MailUtils;
+import Ultis.RSA;
 import service.PasswordEncoder;
 import service.UserService;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +48,19 @@ public class RegisterController extends HttpServlet
                 final Account acountNew = new Account(email, encodePassword, fullname, phone, sex, newsletter);
                 AccountDao.addAccount(acountNew);
                 System.out.println(acountNew.toString());
+
+                //sendmail private key và lưu public key vào db
+                RSA rsa = new RSA();
+                String privateKey = rsa.getPrivateKey();
+                String publicKey = rsa.getPublicKey();
+                    //send mail private key
+                Date now = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat dateFormatSendMail = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+                MailUtils.sendEmail(acountNew.getUsername(), privateKey, dateFormatSendMail.format(now));
+                    //luu public key vao db
+                AccountDao.addPublicKey(acountNew.getUsername(), publicKey, dateFormat.format(now));
+
                 request.setAttribute("mess", "Đăng ký tài khoản thành công");
                 request.getRequestDispatcher("Login.jsp").forward(request, response);
             }
