@@ -36,6 +36,31 @@ public class AccountDao
         sta.executeUpdate();
     }
 
+    public static String getPublicKey(String username, String createDate) throws SQLException, ClassNotFoundException {
+        DataDB db = new DataDB();
+        PreparedStatement sta = db.getStatement("select * from public_key where username=? and ? > createAt and ? < expired");
+        sta.setString(1, username);
+        sta.setString(2, createDate);
+        sta.setString(3, createDate);
+        ResultSet rs = sta.executeQuery();
+        if (rs.next()) {
+            return rs.getString("publickey");
+        } else {
+            return null;
+        }
+
+    }
+
+    public static void setExpiredPublicKey(String username, String date) throws SQLException, ClassNotFoundException {
+        DataDB db = new DataDB();
+        PreparedStatement sta = db.getStatement("update public_key set expired = ? where username = ? and createAt < ? and ? < expired");
+        sta.setString(1, date);
+        sta.setString(2,username);
+        sta.setString(3, date);
+        sta.setString(4, date);
+        sta.executeUpdate();
+    }
+
     public static boolean checkTime(String username) throws SQLException, ClassNotFoundException {
         DataDB db = new DataDB();
         PreparedStatement sta = db.getStatement("SELECT TIME_TO_SEC(TIMEDIFF(now(), time_otp)) as 'time' from account where username=?");

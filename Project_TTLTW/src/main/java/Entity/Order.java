@@ -23,6 +23,9 @@ public class Order implements Serializable
     private int number;
     private String nameAccount;
     private HashMap<String, Integer> listProducts = new HashMap<>();
+    private String stringDate;
+    private boolean isVerifyOwner;
+    private boolean isVerifyData;
     public Order(String id, String username, String payment, String ship, String fullname, String phone, String address, int total, Date date, int totalship, String comment, String status, int number, Time time) {
         this.id = id;
         this.username = username;
@@ -183,6 +186,30 @@ public class Order implements Serializable
         this.date = date;
     }
 
+    public String getStringDate() {
+        return stringDate;
+    }
+
+    public void setStringDate(String stringDate) {
+        this.stringDate = stringDate;
+    }
+
+    public boolean isVerifyOwner() {
+        return isVerifyOwner;
+    }
+
+    public void setVerifyOwner(boolean verifyOwner) {
+        isVerifyOwner = verifyOwner;
+    }
+
+    public boolean isVerifyData() {
+        return isVerifyData;
+    }
+
+    public void setVerifyData(boolean verifyData) {
+        isVerifyData = verifyData;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -201,6 +228,10 @@ public class Order implements Serializable
                 ", status='" + status + '\'' +
                 ", number=" + number +
                 ", nameAccount='" + nameAccount + '\'' +
+                ", listProducts=" + listProducts +
+                ", stringDate='" + stringDate + '\'' +
+                ", isVerifyOwner=" + isVerifyOwner +
+                ", isVerifyData=" + isVerifyData +
                 '}';
     }
 }

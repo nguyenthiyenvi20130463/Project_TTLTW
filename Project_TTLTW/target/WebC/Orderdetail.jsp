@@ -111,6 +111,27 @@
 
           </table>
         </div>
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <td class="text-left" style="width: 50%; vertical-align: top;">Xác minh</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <%
+              if(order.isVerifyOwner()){ %>
+            <td style="font-size: 18px; color: #92ff80; margin-left: 100px">- Đơn hàng đã được xác minh người mua là chính chủ.</td>
+            <% }else{ %>
+            <td style="font-size: 18px; color: #8c6200; margin-left: 100px">- Đơn hàng chưa được xác minh người mua là chính chủ. Kiểm tra thông tin đơn hàng, nếu đơn hàng
+              không phải của bạn, vui lòng hủy đơn hàng hoặc liên hệ admin để được xử lý.</td>
+            <% } %>
+            <% if (!order.isVerifyData()) { %>
+            <td style="font-size: 18px; color: #ff0000; margin-left: 100px">- Đơn hàng đã bị thay đổi thông tin. Vui lòng hủy đơn hàng hoặc liên hệ admin để được xử lý.</td>
+            <% } %>
+          </tr>
+          </tbody>
+        </table>
         <div class="buttons clearfix">
           <div class="pull-right"><a href="HistoryOrder" class="btn btn-primary">Tiếp tục</a></div>
         </div>

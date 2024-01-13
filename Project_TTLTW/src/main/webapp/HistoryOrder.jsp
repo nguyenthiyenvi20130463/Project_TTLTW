@@ -34,6 +34,8 @@
                             <td class="text-left">Trạng thái</td>
                             <td class="text-right">Tổng cộng</td>
                             <td class="text-left">Ngày mua</td>
+                            <td class="text-center">Xác thực dữ liệu</td>
+                            <td class="text-center">Xác thực chính chủ</td>
                             <td class="text-after"></td>
                         </tr>
                         </thead>
@@ -46,6 +48,16 @@
                             <td class="text-left"><%=o.getStatus()%></td>
                             <td class="text-right"><%=o.getTotal()%></td>
                             <td class="text-left"><%=o.getDate().toString()%></td>
+                            <% if(o.isVerifyData()) { %>
+                                <td class="text-center" style="color: #20a278; font-weight: bold"><%=o.isVerifyData()%></td>
+                            <% }else{ %>
+                                <td class="text-center" style="color: #ff0000; font-weight: bold"><%=o.isVerifyData()%></td>
+                            <% }if(o.isVerifyOwner()){ %>
+                                <td class="text-center" style="color: #20a278; font-weight: bold"><%=o.isVerifyOwner()%></td>
+                            <% }else{ %>
+                                <td class="text-center" style="color: #ff0000; font-weight: bold"><%=o.isVerifyOwner()%></td>
+                            <% } %>
+
                             <td class="text-right"><a href="OrderDetail?id=<%=o.getId()%>" data-toggle="tooltip" title="" class="btn btn-info" data-original-title="View"><i class="fa fa-eye"></i></a></td>
                         </tr>
                         <% } %>

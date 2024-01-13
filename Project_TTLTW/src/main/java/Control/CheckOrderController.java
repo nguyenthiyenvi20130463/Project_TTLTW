@@ -6,7 +6,9 @@ import Entity.Product;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Set;
 import java.sql.SQLException;
 
@@ -42,6 +44,7 @@ public class CheckOrderController extends HttpServlet
         if (cart.getCart().isEmpty()) {
             response.sendRedirect("Cart");
         }
+        Date date = new Date();
         String username = account.getUsername();
         String paymentText = request.getParameter("payment_method");
         String payment = paymentText.equals("Cod") ? "Thanh toán khi nhận hàng" : null;
@@ -62,20 +65,23 @@ public class CheckOrderController extends HttpServlet
                 id_order = Ulti.randomText();
             }
 
-            //Signature
-            Order orderSign = new Order(id_order, username, paymentText, shipText, fullname, numberphone, address, total, totalship, comment);
+            //Data
+            Order orderSign = new Order(id_order, username, payment, ship, fullname, numberphone, address, total, totalship, comment);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            orderSign.setStringDate(dateFormat.format(date));
 
-            dao.addOrder(id_order, username, payment, ship, totalship, total, fullname, numberphone, address, comment, cart.getCart().size());
+            dao.addOrder(id_order, username, payment, ship, totalship, total, fullname, numberphone, address, date, comment, cart.getCart().size());
             Set<String> list = cart.getCart().keySet();
             for (String s : list) {
                 Product p = daoProduct.getProduct(s);
                 dao.addProductOrder(id_order, s, cart.getCart().get(s), p.getPrice_buy() * cart.getCart().get(s));
 
-                //signature
+                //data
                 orderSign.addProductBuy(p.getId(), cart.getCart().get(s));
             }
 
-            //signature
+
+            //Signature verify
             byte[] privateKeys = null;
             String option = request.getParameter("option"); // Lấy giá trị của option
             if (option.equals("text")) {
@@ -92,18 +98,21 @@ public class CheckOrderController extends HttpServlet
                 privateKeys = Base64.getDecoder().decode(stringBuilder.toString());
             }
             if(privateKeys!=null){
-                //Hash object
-                SHA224 sha224 = new SHA224();
-                byte[] objectHash = sha224.convertToByteArray(orderSign);
-                String hashingObject = sha224.hashing(objectHash);
-
                 RSA rsa = new RSA();
-                String encrypt = rsa.encrypt(hashingObject, privateKeys);
-                System.out.println(encrypt);
-
+                String encrypt = rsa.encrypt(id_order, privateKeys);
                 OrderDao orderDao = new OrderDao();
                 orderDao.updateSignature(id_order, encrypt);
             }
+
+
+            //Verify data
+            //Hash object
+            SHA224 sha224 = new SHA224();
+            System.out.println(orderSign);
+            byte[] objectHash = sha224.convertToByteArray(orderSign);
+            String hashingObject = sha224.hashing(objectHash);
+            OrderDao orderDao = new OrderDao();
+            orderDao.updateVerifyData(id_order, hashingObject);
 
             cart.getCart().clear();
             request.getRequestDispatcher("Success.jsp").forward(request, response);
